@@ -1,0 +1,38 @@
+# EuroLeague Quantitative Betting & Pricing Engine 🏀📊
+
+A production-grade Python framework for FIBA/EuroLeague quantitative modeling, dynamic minutes redistribution, and automated betting line pricing. Built for quantitative trading environments.
+
+## 🎯 Key Capabilities
+
+- **Dynamic Rotation Engine:** Automates minute redistribution across 200 total game minutes based on positional affinity, injury status (OUT/QUESTIONABLE), and player workload caps (`max_min`).
+- **Micro-to-Macro Efficiency Mapping:** Aggregates individual player metrics ($USG\%$, $TS\%$, $TOV\%$) into projected team Points Per Possession ($PPP$).
+- **Commercial Odds & De-vigging:** Implements power/multiplicative vigorish insertion (overround) and extracts fair probabilities from sharp market lines.
+- **Poisson & Gaussian Spread Modeling:** Converts expected possession counts and efficiency differentials into match handicaps and totals.
+
+## 📐 Mathematical Formulation
+
+### 1. True Shooting Percentage ($TS\%$)
+$$TS\% = \frac{\text{PTS}}{2 \times (\text{FGA} + 0.44 \times \text{FTA})}$$
+
+### 2. Team Projected Points Per Possession ($PPP_{\text{team}}$)
+$$PPP_{\text{team}} = \sum_{i=1}^{N} \left( w_i \times 2 \times TS\%_i \times (1 - TOV\%_i) \right) \quad \text{where } w_i = \frac{\widehat{\text{Min}}_i}{200}$$
+
+### 3. Vigorish Insertion ($P_{\text{offered}}$)
+$$P_{\text{offered}, k} = \frac{P_{\text{fair}, k}^{1/\gamma}}{\sum_{j} P_{\text{fair}, j}^{1/\gamma}} \implies \text{Decimal Odds}_k = \frac{1}{P_{\text{offered}, k}}$$
+
+---
+
+## 📂 Repository Architecture
+
+```text
+euroleague-quant-engine/
+├── src/
+│   ├── __init__.py
+│   ├── metrics.py       # USG%, TS%, and team PPP aggregation algorithms
+│   ├── rotation.py      # Positional minutes redistribution engine
+│   └── pricing.py       # Fair odds, margin insertion, and de-vigging
+├── data/
+│   └── euroleague_rosters.json
+├── main.py              # Pre-match pricing pipeline execution
+├── requirements.txt
+└── README.md
